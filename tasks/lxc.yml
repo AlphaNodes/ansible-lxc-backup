@@ -1,0 +1,36 @@
+- set_fact: with_stop="{{ instance.with_stop | default(lxc_backup_with_stop)}}"
+- set_fact: warning_options="{{ '--warning=no-file-removed --warning=no-file-changed --warning=no-file-ignored' if with_stop else '--warning=no-file-ignored' }}"
+
+- block:
+  - name: Stop container - {{ instance.name }}
+    lxc_container:
+      name: '{{ instance.name }}'
+      state: stopped
+
+  - name: Wait {{ lxc_backup_wait_seconds }} to continue - {{ instance.name }}
+    pause: lxc_backup_wait_seconds
+      seconds: '{{ lxc_backup_wait_seconds }}'
+
+  when: with_stop
+
+- name: Mount lxc container - {{ instance.name }}
+  mount:
+    name: '{{ lxc_backup_mount_parent_dir }}/{{ instance.name }}'
+    src: /dev/{{ lxc_backup_vg_name }}/{{ instance.name }}
+    state: mounted
+
+- name: Create backup - {{ instance.name }}
+  command: "tar --numeric-owner {{ warning_options }} -czf {{ lxc_backup_dir }}/lxc-{{ instance.name }}-{{ date_stamp }}.tar.gz {{ instance.name }}"
+  args:
+    chdir: '{{ lxc_backup_mount_parent_dir }}'
+
+- name: Unmount lxc container - {{ instance.name }}
+  mount:
+    name: '{{ lxc_backup_mount_parent_dir }}/{{ instance.name }}'
+    state: unmount
+
+- name: Start container - {{ instance.name }}
+  lxc_container:
+    name: '{{ instance.name }}'
+    state: started
+  when: with_stop

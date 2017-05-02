@@ -1,0 +1,20 @@
+- set_fact: date_stamp="{{ lookup('pipe','date +%Y%m%d%H%M') }}"
+- set_fact: day_stamp="{{ lookup('pipe','date +%Y%m%d') }}"
+
+- name: Ensures backup_dir exists
+  tags: backup
+  file:
+    path: '{{ lxc_backup_dir }}'
+    state: directory
+
+- include: clear.yml
+  tags: backup
+  tags: clear
+
+- include: lxc.yml
+  tags: backup
+  with_items: "{{ lxc_backup_sets | default([]) }}"
+  loop_control:
+    loop_var: instance
+  when: >
+    lxc_backup_set_name == '' or lxc_backup_set_name == instance.name
