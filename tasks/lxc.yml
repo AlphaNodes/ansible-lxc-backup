@@ -3,20 +3,24 @@
 
 - block:
   - name: Stop container - {{ instance.name }}
-    lxc_container:
-      name: '{{ instance.name }}'
-      state: stopped
+    command: lxc-stop --name {{ instance.name }}
 
   - name: Wait {{ lxc_backup_wait_seconds }} to continue - {{ instance.name }}
-    pause: lxc_backup_wait_seconds
+    pause:
       seconds: '{{ lxc_backup_wait_seconds }}'
 
   when: with_stop
+
+- name: Ensures mount point exists - {{ instance.name }}
+  file:
+    path: '{{ lxc_backup_mount_parent_dir }}/{{ instance.name }}'
+    state: directory
 
 - name: Mount lxc container - {{ instance.name }}
   mount:
     name: '{{ lxc_backup_mount_parent_dir }}/{{ instance.name }}'
     src: /dev/{{ lxc_backup_vg_name }}/{{ instance.name }}
+    fstype: ext4
     state: mounted
 
 - name: Create backup - {{ instance.name }}
@@ -27,10 +31,8 @@
 - name: Unmount lxc container - {{ instance.name }}
   mount:
     name: '{{ lxc_backup_mount_parent_dir }}/{{ instance.name }}'
-    state: unmount
+    state: unmounted
 
 - name: Start container - {{ instance.name }}
-  lxc_container:
-    name: '{{ instance.name }}'
-    state: started
+  command: lxc-start --name {{ instance.name }}
   when: with_stop
