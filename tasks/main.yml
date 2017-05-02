@@ -9,7 +9,6 @@
 
 - include: clear.yml
   tags: backup
-  tags: clear
 
 - include: lxc.yml
   tags: backup
