@@ -1,4 +1,4 @@
-- set_fact: with_stop="{{ instance.with_stop | default(lxc_backup_with_stop)}}"
+- set_fact: with_stop="{{ instance.with_stop | default(lxc_backup_with_stop) }}"
 - set_fact: warning_options="{{ '--warning=no-file-ignored' if with_stop else '--warning=no-file-removed --warning=no-file-changed --warning=no-file-ignored' }}"
 
 - block:
