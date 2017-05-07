@@ -20,7 +20,8 @@
   mount:
     name: '{{ lxc_backup_mount_parent_dir }}/{{ instance.name }}'
     src: /dev/{{ lxc_backup_vg_name }}/{{ instance.name }}
-    fstype: ext4
+    fstype: '{{ lxc_backup_mount_fstype }}'
+    opts: '{{ lxc_backup_mount_opts }}'
     state: mounted
 
 - name: Create backup - {{ instance.name }}

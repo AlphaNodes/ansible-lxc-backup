@@ -8,6 +8,9 @@ lxc_backup_sets: []
 lxc_backup_set_name: ''
 
 lxc_backup_mount_parent_dir: /mnt
+lxc_backup_mount_fstype: ext4
+lxc_backup_mount_opts: defaults,noauto
+
 lxc_backup_vg_name: vg0
 lxc_backup_with_stop: no
 
