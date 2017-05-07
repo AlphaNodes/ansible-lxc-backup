@@ -24,6 +24,7 @@
     opts: '{{ lxc_backup_mount_opts }}'
     state: mounted
 
+# tar returns 1, if source file being changed while archived
 - name: Create backup - {{ instance.name }}
   command: "tar --numeric-owner {{ warning_options }} -czf {{ lxc_backup_dir }}/lxc-{{ instance.name }}-{{ date_stamp }}.tar.gz {{ instance.name }}"
   register: tar_cmd
