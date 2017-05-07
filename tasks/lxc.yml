@@ -26,6 +26,8 @@
 
 - name: Create backup - {{ instance.name }}
   command: "tar --numeric-owner {{ warning_options }} -czf {{ lxc_backup_dir }}/lxc-{{ instance.name }}-{{ date_stamp }}.tar.gz {{ instance.name }}"
+  register: tar_cmd
+  failed_when: tar_cmd.rc >= 2
   args:
     chdir: '{{ lxc_backup_mount_parent_dir }}'
 
