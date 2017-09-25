@@ -7,10 +7,10 @@
     path: '{{ lxc_backup_dir }}'
     state: directory
 
-- include: clear.yml
+- include_tasks: clear.yml
   tags: backup
 
-- include: lxc.yml
+- include_tasks: lxc.yml
   tags: backup
   with_items: "{{ lxc_backup_sets | default([]) }}"
   loop_control:
