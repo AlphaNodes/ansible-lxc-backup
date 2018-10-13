@@ -12,7 +12,7 @@
 
 - include_tasks: lxc.yml
   tags: backup
-  with_items: "{{ lxc_backup_sets | default([]) }}"
+  loop: "{{ lxc_backup_sets | default([]) }}"
   loop_control:
     loop_var: instance
   when: >
